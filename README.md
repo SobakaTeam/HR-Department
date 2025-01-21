@@ -1,0 +1,1 @@
+![Grafic](ProjectInfo/SimpleGrafic.jpg)
