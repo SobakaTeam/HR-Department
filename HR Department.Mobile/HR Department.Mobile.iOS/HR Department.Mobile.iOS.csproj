@@ -127,10 +127,4 @@
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\HR Department.Mobile\HR Department.Mobile.csproj">
-      <Project>{F699A6F7-45D4-4772-908F-BDF2C70CF700}</Project>
-      <Name>HR Department.Mobile</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>
