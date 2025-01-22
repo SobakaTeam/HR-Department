@@ -9,9 +9,13 @@ using MySql.Data.MySqlClient;
 
 namespace HR_Department.DeskTop
 {
-    internal class Connection
+    public class Connection
     {
-        HttpClient client = new HttpClient();
-        Client.BaseAddress = new Uri("http://example.com/");
+        private static HttpClient sharedClient = new()
+        {
+            BaseAddress = new Uri("https://jsonplaceholder.typicode.com"),
+
+        };
+       
     }
 }
