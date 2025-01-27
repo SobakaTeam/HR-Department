@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Launcher", "Launcher", "{BE192549-8786-4602-9BE6-96901D02903B}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		init.sql = init.sql
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HR-Department.APIv2", "HR-Department.APIv2\HR-Department.APIv2.csproj", "{BF8D87B5-9BD1-4A21-85E7-B4DF4E232A7D}"
