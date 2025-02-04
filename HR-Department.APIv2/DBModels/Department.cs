@@ -13,7 +13,7 @@ public partial class Department
 
     public DateOnly CreateAt { get; set; }
 
-    public DateOnly? UpdatbiginteAt { get; set; }
+    public DateOnly? UpdateAt { get; set; }
 
     public virtual ICollection<DepartmentOrganization> DepartmentOrganizations { get; set; } = new List<DepartmentOrganization>();
 

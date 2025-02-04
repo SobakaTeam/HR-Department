@@ -51,7 +51,7 @@ CREATE TABLE "Department"(
     "Name" VARCHAR(255) NOT NULL,
     "Description" TEXT NULL,
     "CreateAt" DATE NOT NULL,
-    "UpdatbiginteAt" DATE NULL
+    "UpdateAt" DATE NULL
 );
 CREATE TABLE "Person/Department"(
     "ID" BIGINT PRIMARY KEY,

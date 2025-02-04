@@ -1,14 +1,17 @@
 ﻿using HR_Department.APIv2.DBModels;
 using HR_Department.APIv2.DBModels.Types;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Numerics;
 using System.Reflection;
 
@@ -16,98 +19,76 @@ namespace HR_Department.APIv2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PersonsController : ControllerBase
+    public class PersonsController : MyApiController
     {
-        private readonly AppDbContext DBContext;
-
-        public PersonsController(AppDbContext context)
+        public PersonsController(AppDbContext context) : base(context) 
         {
-            DBContext = context;
+            //there i set DB context to perents class into "dbContext"
         }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Person>>> GetPersons([FromQuery] Dictionary<string, string> properties,
             [FromHeader] string? orderBy, [FromHeader] SortOrder? sortOrder = SortOrder.Ascending)
         {
-            IQueryable<Person> query = DBContext.Persons;
-            //Property Filter
-            if (properties != null)
-            {
-                foreach (var property in properties)
-                {
-                    query = ApplyFilter(query, property.Key, property.Value);
-                }
-            }
-            //OrderBy Filter
-            if (orderBy != null)
-            {
-                ApplyOrderBy(query, orderBy, sortOrder);
-            }
-            //Main Data Tamplate
-            //query.Join(inner:DBContext.Authorizations,DBContext.PersonAuthorizations.Where();
-
-            if (query != null )
-            { return await query.ToListAsync(); }
-            else
-            { return NotFound(); }
+            return await GetEntities<Person>(properties, orderBy, sortOrder);
         }
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Person>> GetItemById(long id)
+        [HttpGet("{personId}")]
+        public async Task<ActionResult<Person>> GetPersonById(long personId)
         {
-            Person item = await DBContext.Persons.FirstOrDefaultAsync(p => p.Id == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return item;
-            }
+            return await GetEntity<Person>(personId);
+        }
+        [HttpPut]
+        public async Task<ActionResult<Person>> PutPerson(Person person)
+        {
+            return await PutEntity<Person>(person);
+        }
+        [HttpPatch("{personId}")]
+        public async Task<IActionResult> PatchPerson(long personId, [FromBody] JsonPatchDocument<Person> patchDocument)
+        {
+            return await PatchEntity<Person>(personId, patchDocument);
+        }
+        [HttpPost]
+        public async Task<ActionResult<Person>> PostPerson(Person person)
+        {
+            return await PostEntity<Person>(person);
+        }
+        [HttpDelete("{personId}")]
+        public async Task<ActionResult> DeletePerson(long personId)
+        {
+            return await DeleteEntity<Person>(personId);
+        }
+        [HttpGet("{personId}/departments")]
+        public async Task<ActionResult<IEnumerable<Department>>> GetDepartmentsByPersonId(long personId)
+        {
+           return await GetEntitiesByForginKey<Department,PersonDepartment>(pd => pd.PersonId == personId, pd => pd.Department);
+        }
+        [HttpGet("{personId}/positions")]
+        public async Task<ActionResult<IEnumerable<Position>>> GetPositionsByPersonId(long personId)
+        {
+            return await GetEntitiesByForginKey<Position,PersonPosition>(p=>p.PersonId == personId, p => p.Position);
+
+        }
+        [HttpGet("{personId}/children")]
+        public async Task<ActionResult<IEnumerable<Child>>> GetChildrenByPersonId(long personId)
+        {
+            return await GetEntitiesByForginKey<Child,PersonChild>(e=>e.PersonId == personId, e => e.Child);
+
+        }
+        [HttpGet("{personId}/vacations")]
+        public async Task<ActionResult<IEnumerable<Vacation>>> GetVacationsByPersonId(long personId)
+        {
+            return await GetEntitiesByForginKey<Vacation, PersonVacation>(e => e.PersonId == personId, e => e.Vacation);
+
+        }
+        [HttpGet("{personId}/salaries")]
+        public async Task<ActionResult<IEnumerable<Salary>>> GetSalariesByPersonId(long personId)
+        {
+            return await GetEntitiesByForginKey<Salary, PersonSalary>(e => e.PersonId == personId, e => e.Salary);
         }
 
-
-        private IQueryable<Person> ApplyFilter(IQueryable<Person> query, string propertyName, string value)
+        //Sub Methods
+        private bool PersonExists(long id)
         {
-            ParameterExpression parameter = Expression.Parameter(typeof(Person), "p");
-            MemberExpression property = Expression.Property(parameter, propertyName);
-
-            // Check if the property exists and is not null
-            if (property == null || property.Type == null)
-            {
-                return query; // Property does not exist or its Type is Null
-            }
-
-            // Get the underlying type of nullable types
-            Type targetType = Nullable.GetUnderlyingType(property.Type) ?? property.Type;
-
-
-            // Create the Constant expression
-            var convertedValue = Convert.ChangeType(value, targetType);
-            var constant = Expression.Constant(convertedValue, targetType);
-
-            // Create the Equality expression
-            var equalExpression = Expression.Equal(property, constant);
-            // Create the Lambda Expression
-            var lambda = Expression.Lambda<Func<Person, bool>>(equalExpression, parameter);
-
-            return query.Where(lambda);
-        }
-        private IQueryable<Person> ApplyOrderBy(IQueryable<Person> query, string propertyName, SortOrder? sortOrder)
-        {
-            ParameterExpression parameter = Expression.Parameter(typeof(Person), "p");
-            MemberExpression property = Expression.Property(parameter, propertyName);
-
-            if (property == null)
-            {
-                return query; // Property does not exist
-            }
-            if (sortOrder == SortOrder.Descending)
-            {
-                return query.OrderByDescending(Expression.Lambda<Func<Person, object>>(property, parameter));
-            }
-            else
-            {
-                return query.OrderBy(Expression.Lambda<Func<Person, object>>(property, parameter));
-            }
+            return dbContext.Persons.Any(e => e.Id == id);
         }
     }
 }
