@@ -102,12 +102,12 @@ namespace HR_Department.APIv2.Controllers
             }
             return Ok(await dbContext.Set<T>().FirstOrDefaultAsync(e => GetId(e) == entityId));
         }
-        protected async Task<ActionResult> PatchEntity<T>(long entityId, JsonPatchDocument<Person> patchDocument) where T : class
+        protected async Task<ActionResult> PatchEntity<T>(long entityId, JsonPatchDocument<T> patchDocument) where T : class
         {
-            var entity = await dbContext.Persons.FirstOrDefaultAsync(e => GetId(e) == entityId);
+            var entity = await dbContext.Set<T>().FirstOrDefaultAsync(e => GetId(e) == entityId);
 
             if (entity == null)
-            {
+            {   
                 return NotFound();
             }
             try

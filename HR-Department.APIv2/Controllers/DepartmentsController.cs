@@ -41,7 +41,7 @@ namespace HR_Department.APIv2.Controllers
             return await PutEntity<Department>(department);
         }
         [HttpPatch("{departmentId}")]
-        public async Task<ActionResult> PatchDepartment(long departmentId, [FromBody] JsonPatchDocument<Person> patchDocument)
+        public async Task<ActionResult> PatchDepartment(long departmentId, [FromBody] JsonPatchDocument<Department> patchDocument)
         {
             return await PatchEntity<Department>(departmentId, patchDocument);
         }
