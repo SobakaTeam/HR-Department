@@ -1,95 +1,169 @@
-﻿-- SQL-скрипт для создания базы данных, таблиц и связей
-
--- 1. Создание базы данных (если она не существует)
-CREATE DATABASE IF NOT EXISTS hr_department_db;
-
--- 2. Подключение к базе данных
-\c hr_department_db;
-
--- 3. Создание таблицы пользователей (Employee)
-CREATE TABLE IF NOT EXISTS employees (
-    employee_id SERIAL PRIMARY KEY,       -- Уникальный идентификатор сотрудника
-    first_name VARCHAR(100) NOT NULL,     -- Имя сотрудника
-    last_name VARCHAR(100) NOT NULL,      -- Фамилия сотрудника
-    middle_name VARCHAR(100),          -- Отчество сотрудника
-    birthday DATE, -- день рождения
-    email VARCHAR(100),   -- Электронная почта 
-    phone_number VARCHAR(20),           -- Номер телефона
-    hire_date DATE NOT NULL,            -- Дата приема на работу
-    position_id INTEGER NOT NULL,             -- Идентификатор должности
-    department_id INTEGER NOT NULL,      -- Идентификатор отдела
-    manager_id INTEGER,                -- Идентификатор менеджера (руководителя)
-    salary DECIMAL(10, 2) NOT NULL,      -- Зарплата
-    created_at TIMESTAMP DEFAULT NOW()  -- Дата создания записи
+﻿CREATE TABLE "Person/Authorization"(
+    "ID" BIGINT PRIMARY KEY,
+    "Person_ID" BIGINT NOT NULL,
+    "Authorization_ID" BIGINT NOT NULL
 );
-
--- 4. Создание таблицы продуктов (products)
-CREATE TABLE IF NOT EXISTS products (
-    product_id SERIAL PRIMARY KEY,    -- Уникальный идентификатор продукта
-    name VARCHAR(255) NOT NULL,       -- Название продукта
-    description TEXT,                -- Описание продукта
-    price DECIMAL(10, 2) NOT NULL,  -- Цена продукта
-    stock_quantity INTEGER NOT NULL DEFAULT 0,  -- Количество на складе
-    created_at TIMESTAMP DEFAULT NOW()    -- Дата и время создания записи
+CREATE TABLE "Person"(
+    "ID" BIGINT PRIMARY KEY,
+    "FirstName" VARCHAR(255) NULL,
+    "LastName" VARCHAR(255) NULL,
+    "MidleName" VARCHAR(255) NULL,
+    "Phone" VARCHAR(255) NULL,
+    "Email" VARCHAR(255) NULL,
+    "Birthday" DATE NULL,
+    "CreateAt" DATE NOT NULL,
+    "UpdateAt" DATE NULL,
+    "IsWorking" BOOLEAN NULL,
+    "IsMarried" BOOLEAN NULL,
+    "NowPlaceLiving" TEXT NULL,
+    "HireDate" DATE NULL
 );
-
--- 5. Создание таблицы категорий продуктов (categories)
-CREATE TABLE IF NOT EXISTS categories (
-    category_id SERIAL PRIMARY KEY,  -- Уникальный идентификатор категории
-    name VARCHAR(100) NOT NULL UNIQUE, -- Название категории (уникальное)
-    description TEXT,                 -- Описание категории
-    created_at TIMESTAMP DEFAULT NOW() -- Дата и время создания записи
+ALTER TABLE
+    "Person" ADD CONSTRAINT "person_email_unique" UNIQUE("Email");
+CREATE TABLE "Child"(
+    "ID" BIGINT PRIMARY KEY,
+    "FirstName" VARCHAR(255) NULL,
+    "Surname" VARCHAR(255) NULL,
+    "MidleName" VARCHAR(255) NULL,
+    "Birthday" DATE NULL,
+    "CreateAt" DATE NOT NULL,
+    "UpdateAt" DATE NULL
 );
-
--- 6. Создание связующей таблицы между продуктами и категориями (product_categories)
-CREATE TABLE IF NOT EXISTS product_categories (
-    product_id INTEGER NOT NULL,
-    category_id INTEGER NOT NULL,
-    PRIMARY KEY (product_id, category_id),     -- Составной первичный ключ
-    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE,  -- Внешний ключ к таблице products
-    FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE  -- Внешний ключ к таблице categories
+CREATE TABLE "Person/child"(
+    "ID" BIGINT PRIMARY KEY,
+    "Person_ID" BIGINT NOT NULL,
+    "Child_ID" BIGINT NOT NULL
 );
-
--- 7. Создание таблицы заказов (orders)
-CREATE TABLE IF NOT EXISTS orders (
-    order_id SERIAL PRIMARY KEY,   -- Уникальный идентификатор заказа
-    user_id INTEGER NOT NULL,   -- Идентификатор пользователя, сделавшего заказ
-    order_date TIMESTAMP NOT NULL DEFAULT NOW(),  -- Дата и время заказа
-    total_amount DECIMAL(10, 2) NOT NULL,   -- Общая сумма заказа
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE  -- Внешний ключ к таблице users
+CREATE TABLE "Position"(
+    "ID" BIGINT PRIMARY KEY,
+    "Name" VARCHAR(255) NOT NULL,
+    "Desctription" TEXT NULL,
+    "CreateAt" DATE NOT NULL,
+    "UpdateAt" DATE NULL
 );
-
--- 8. Создание таблицы деталей заказа (order_items)
-CREATE TABLE IF NOT EXISTS order_items (
-    order_item_id SERIAL PRIMARY KEY,   -- Уникальный идентификатор элемента заказа
-    order_id INTEGER NOT NULL,        -- Идентификатор заказа
-    product_id INTEGER NOT NULL,      -- Идентификатор продукта
-    quantity INTEGER NOT NULL,        -- Количество товара
-    price DECIMAL(10, 2) NOT NULL,    -- Цена за единицу товара
-    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,     -- Внешний ключ к таблице orders
-    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE   -- Внешний ключ к таблице products
+CREATE TABLE "Person/Position"(
+    "ID" BIGINT PRIMARY KEY,
+    "Person_ID" BIGINT NOT NULL,
+    "Position_ID" BIGINT NOT NULL
 );
-
--- 9. Создание таблицы адресов (addresses)
-CREATE TABLE IF NOT EXISTS addresses (
-    address_id SERIAL PRIMARY KEY,    -- Уникальный идентификатор адреса
-    user_id INTEGER NOT NULL,       -- Идентификатор пользователя
-    street VARCHAR(255) NOT NULL,     -- Улица
-    city VARCHAR(100) NOT NULL,       -- Город
-    state VARCHAR(100),              -- Область/штат
-    zip_code VARCHAR(20),            -- Почтовый индекс
-     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE -- Внешний ключ к таблице users
+CREATE TABLE "Department"(
+    "ID" BIGINT PRIMARY KEY,
+    "Name" VARCHAR(255) NOT NULL,
+    "Description" TEXT NULL,
+    "CreateAt" DATE NOT NULL,
+    "UpdatbiginteAt" DATE NULL
 );
+CREATE TABLE "Person/Department"(
+    "ID" BIGINT PRIMARY KEY,
+    "Person_ID" BIGINT NOT NULL,
+    "Department_ID" BIGINT NOT NULL
+);
+CREATE TABLE "Vacation"(
+    "ID" BIGINT PRIMARY KEY,
+    "BeginDate" DATE NOT NULL,
+    "EndDate" DATE NULL,
+    "VacationType" VARCHAR(255) NULL,
+    "CreateAt" DATE NOT NULL,
+    "UpdateAt" DATE NULL
+);
+CREATE TABLE "Person/Vacation"(
+    "ID" BIGINT PRIMARY KEY,
+    "Person_ID" BIGINT NOT NULL,
+    "Vacation_ID" BIGINT NOT NULL
+);
+CREATE TABLE "Organization"(
+    "ID" BIGINT PRIMARY KEY,
+    "Name" VARCHAR(255) NOT NULL,
+    "RegistrDate" DATE NOT NULL,
+    "Adress" TEXT NULL,
+    "CreateAt" DATE NOT NULL,
+    "UpdateAt" DATE NULL
+);
+CREATE TABLE "Department/Organization"(
+    "ID" BIGINT PRIMARY KEY,
+    "Department_ID" BIGINT NOT NULL,
+    "Organization_ID" BIGINT NOT NULL
+);
+CREATE TABLE "Salary"(
+    "ID" BIGINT PRIMARY KEY,
+    "Amount" DECIMAL(8, 2) NOT NULL,
+    "BeginDate" DATE NOT NULL,
+    "EndDate" DATE NULL,
+    "CreateAt" DATE NOT NULL,
+    "UpdateAt" DATE NULL
+);
+CREATE TABLE "Person/Salary"(
+    "ID" BIGINT PRIMARY KEY,
+    "Person_ID" BIGINT NOT NULL,
+    "Salary_ID" BIGINT NOT NULL
+);
+CREATE TABLE "Authorization"(
+    "ID" BIGINT PRIMARY KEY,
+    "Login" VARCHAR(255) NOT NULL,
+    "PasswordHash" TEXT NOT NULL,
+    "PasswordSalt" TEXT NULL,
+    "Role" VARCHAR(255) NULL,
+    "CreateAt" DATE NOT NULL,
+    "UpdateAT" DATE NULL
+);
+ALTER TABLE
+    "Authorization" ADD CONSTRAINT "authorization_login_unique" UNIQUE("Login");
+ALTER TABLE
+    "Person/Vacation" ADD CONSTRAINT "person/vacation_person_id_foreign" FOREIGN KEY("Person_ID") REFERENCES "Person"("ID");
+ALTER TABLE
+    "Person/Authorization" ADD CONSTRAINT "person/authorization_person_id_foreign" FOREIGN KEY("Person_ID") REFERENCES "Person"("ID");
+ALTER TABLE
+    "Person/child" ADD CONSTRAINT "person/child_child_id_foreign" FOREIGN KEY("Child_ID") REFERENCES "Child"("ID");
+ALTER TABLE
+    "Person/Position" ADD CONSTRAINT "person/position_person_id_foreign" FOREIGN KEY("Person_ID") REFERENCES "Person"("ID");
+ALTER TABLE
+    "Person/child" ADD CONSTRAINT "person/child_person_id_foreign" FOREIGN KEY("Person_ID") REFERENCES "Person"("ID");
+ALTER TABLE
+    "Person/Salary" ADD CONSTRAINT "person/salary_person_id_foreign" FOREIGN KEY("Person_ID") REFERENCES "Person"("ID");
+ALTER TABLE
+    "Person/Position" ADD CONSTRAINT "person/position_position_id_foreign" FOREIGN KEY("Position_ID") REFERENCES "Position"("ID");
+ALTER TABLE
+    "Person/Department" ADD CONSTRAINT "person/department_person_id_foreign" FOREIGN KEY("Person_ID") REFERENCES "Person"("ID");
+ALTER TABLE
+    "Person/Vacation" ADD CONSTRAINT "person/vacation_vacation_id_foreign" FOREIGN KEY("Vacation_ID") REFERENCES "Vacation"("ID");
+ALTER TABLE
+    "Department/Organization" ADD CONSTRAINT "department/organization_department_id_foreign" FOREIGN KEY("Department_ID") REFERENCES "Department"("ID");
+ALTER TABLE
+    "Department/Organization" ADD CONSTRAINT "department/organization_organization_id_foreign" FOREIGN KEY("Organization_ID") REFERENCES "Organization"("ID");
+ALTER TABLE
+    "Person/Salary" ADD CONSTRAINT "person/salary_salary_id_foreign" FOREIGN KEY("Salary_ID") REFERENCES "Salary"("ID");
+ALTER TABLE
+    "Person/Authorization" ADD CONSTRAINT "person/authorization_autorization_id_foreign" FOREIGN KEY("Authorization_ID") REFERENCES "Authorization"("ID");
+ALTER TABLE
+    "Person/Department" ADD CONSTRAINT "person/department_department_id_foreign" FOREIGN KEY("Department_ID") REFERENCES "Department"("ID");
 
+    -- Add auto incriment to ID properties
+    ALTER TABLE "Person/Authorization" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;
 
--- 10. Добавление индексов для таблиц (ускорение поиска)
-CREATE INDEX idx_users_username ON users (username);
-CREATE INDEX idx_products_name ON products (name);
-CREATE INDEX idx_orders_user_id ON orders (user_id);
-CREATE INDEX idx_product_categories_product_id ON product_categories (product_id);
-CREATE INDEX idx_product_categories_category_id ON product_categories (category_id);
+    ALTER TABLE "Person" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;
 
+    ALTER TABLE "Child" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;
 
--- 11. Создание пользователя и добавление ему прав
-    CREATE USER myuser WITH PASSWORD 'mysecretpassword';
-     GRANT ALL PRIVILEGES ON DATABASE my_ecommerce_db TO myuser;
+    ALTER TABLE "Person/child" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;
+
+    ALTER TABLE "Position" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;
+
+    ALTER TABLE "Person/Position" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;
+
+    ALTER TABLE "Department" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;
+
+    ALTER TABLE "Person/Department" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;
+
+    ALTER TABLE "Vacation" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;
+
+    ALTER TABLE "Person/Vacation" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;
+
+    ALTER TABLE "Organization" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;
+
+    ALTER TABLE "Department/Organization" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;
+
+    ALTER TABLE "Salary" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;
+
+    ALTER TABLE "Person/Salary" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;
+
+    ALTER TABLE "Authorization" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY;

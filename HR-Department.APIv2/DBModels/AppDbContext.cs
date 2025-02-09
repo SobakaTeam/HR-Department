@@ -62,7 +62,6 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.Login, "authorization_login_unique").IsUnique();
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.Login).HasMaxLength(255);
             entity.Property(e => e.Role).HasMaxLength(255);
@@ -76,7 +75,6 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Child");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.FirstName).HasMaxLength(255);
             entity.Property(e => e.MidleName).HasMaxLength(255);
@@ -90,7 +88,6 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Department");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.Name).HasMaxLength(255);
         });
@@ -102,7 +99,6 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Department/Organization");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.DepartmentId).HasColumnName("Department_ID");
             entity.Property(e => e.OrganizationId).HasColumnName("Organization_ID");
@@ -125,21 +121,21 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Organization");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.Name).HasMaxLength(255);
         });
 
         modelBuilder.Entity<Person>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("Person_pkey");
+            entity.HasKey(e => e.Id)
+            .HasName("Person_pkey");
+            
 
             entity.ToTable("Person");
 
             entity.HasIndex(e => e.Email, "person_email_unique").IsUnique();
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.FirstName).HasMaxLength(255);
@@ -155,7 +151,6 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Person/Authorization");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.AuthorizationId).HasColumnName("Authorization_ID");
             entity.Property(e => e.PersonId).HasColumnName("Person_ID");
@@ -178,7 +173,6 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Person/child");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.ChildId).HasColumnName("Child_ID");
             entity.Property(e => e.PersonId).HasColumnName("Person_ID");
@@ -201,7 +195,6 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Person/Department");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.DepartmentId).HasColumnName("Department_ID");
             entity.Property(e => e.PersonId).HasColumnName("Person_ID");
@@ -224,7 +217,6 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Person/Position");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.PersonId).HasColumnName("Person_ID");
             entity.Property(e => e.PositionId).HasColumnName("Position_ID");
@@ -247,7 +239,6 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Person/Salary");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.PersonId).HasColumnName("Person_ID");
             entity.Property(e => e.SalaryId).HasColumnName("Salary_ID");
@@ -270,7 +261,6 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Person/Vacation");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.PersonId).HasColumnName("Person_ID");
             entity.Property(e => e.VacationId).HasColumnName("Vacation_ID");
@@ -293,7 +283,6 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Position");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.Name).HasMaxLength(255);
         });
@@ -305,7 +294,6 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Salary");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.Amount).HasPrecision(8, 2);
         });
@@ -317,7 +305,6 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Vacation");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.VacationType).HasMaxLength(255);
         });

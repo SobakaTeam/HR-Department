@@ -91,6 +91,10 @@ namespace HR_Department.APIv2.Controllers
                 return BadRequest();
             }
             long entityId = GetId(entity);
+            if(!await ExistsEntity<T>(entityId))
+            {
+                return NotFound();
+            }
             try
             {
                 dbContext.Set<T>().Entry(entity).State = EntityState.Modified;
@@ -100,11 +104,11 @@ namespace HR_Department.APIv2.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { Message = "Error saving changes to database", Error = ex.Message });
             }
-            return Ok(await dbContext.Set<T>().FirstOrDefaultAsync(e => GetId(e) == entityId));
+            return Ok(entity);
         }
         protected async Task<ActionResult> PatchEntity<T>(long entityId, JsonPatchDocument<T> patchDocument) where T : class
         {
-            var entity = await dbContext.Set<T>().FirstOrDefaultAsync(e => GetId(e) == entityId);
+            var entity = await dbContext.Set<T>().FirstOrDefaultAsync(e => EF.Property<long>(e, "Id") == entityId);
 
             if (entity == null)
             {   
@@ -112,7 +116,7 @@ namespace HR_Department.APIv2.Controllers
             }
             try
             {
-                patchDocument.ApplyTo(entity, (Microsoft.AspNetCore.JsonPatch.Adapters.IObjectAdapter)ModelState);
+                patchDocument.ApplyTo(entity);
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
@@ -123,7 +127,7 @@ namespace HR_Department.APIv2.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { Message = "Error saving changes to database", Error = ex.Message });
             }
-            return Ok();
+            return NoContent();
         }
         protected async Task<ActionResult> DeleteEntity<T>(long id) where T : class
         {
@@ -166,9 +170,9 @@ namespace HR_Department.APIv2.Controllers
             }
         }
         //sub methods
-        protected bool ExistsEntity<T>(long id) where T : class
+        protected async Task<bool> ExistsEntity<T>(long id) where T : class
         {
-            return dbContext.Set<T>().Any(e => GetId(e) == id);
+            return await dbContext.Set<T>().AnyAsync(e => EF.Property<long>(e, "Id") == id);
         }
         protected IQueryable<T> AplyWhereFilter<T>(IQueryable<T> query, string propertyName,string value)
         {

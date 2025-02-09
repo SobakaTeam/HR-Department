@@ -47,8 +47,18 @@ namespace HR_Department.APIv2.Controllers
             return await PatchEntity<Person>(personId, patchDocument);
         }
         [HttpPost]
-        public async Task<ActionResult<Person>> PostPerson(Person person)
+        public async Task<ActionResult<Person>> PostPerson(PersonDTO personDTO)
         {
+            if (personDTO == null)
+            {
+                return BadRequest();
+            }
+            Person person = new Person();
+            foreach (var propety in typeof(PersonDTO).GetProperties())
+            {
+                person.GetType().GetProperty(propety.Name).SetValue(person,propety.GetValue(personDTO));
+            }
+
             return await PostEntity<Person>(person);
         }
         [HttpDelete("{personId}")]
