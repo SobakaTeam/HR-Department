@@ -1,0 +1,43 @@
+version: "3.9"  # Указываем версию формата docker-compose
+
+services:
+  # --- Сервис базы данных PostgreSQL ---
+  db:
+    image: postgres:17  # Используем официальный образ PostgreSQL (замените на нужную версию)
+    container_name: app-db # Уникальное имя контейнера
+    restart: always  # Автоматически перезапускать контейнер при сбое
+    environment:
+      POSTGRES_USER: postgres  # Замените на желаемое имя пользователя
+      POSTGRES_PASSWORD: postgres  # Замените на надежный пароль
+      POSTGRES_DB: AppDataBase  # Замените на имя вашей базы данных
+
+    ports:
+      - "5432:5432"  # Отображаем порт 5432 контейнера на порт 5432 хоста (для доступа извне)
+    volumes:
+      - db_data:/var/lib/postgresql/data  # Монтируем volume для сохранения данных (необязательно, но рекомендуется)
+      - ./launcher:/init.sql 
+
+  # --- Сервис вашего .NET приложения ---
+  app:
+    build:
+      context: .  # Указываем текущую директорию как контекст сборки
+      dockerfile: Dockerfile # Название Dockerfile
+    container_name: my-app  # Уникальное имя контейнера
+    restart: always # Автоматически перезапускать контейнер при сбое
+    ports:
+      - "8000:80"  # Отображаем порт 80 контейнера на порт 8000 хоста (для доступа извне)
+    environment:
+      # Передаем переменные окружения вашему приложению
+      ASPNETCORE_ENVIRONMENT: Development  # Замените на Production в продакшене
+      ConnectionStrings__DefaultConnection: "Host=db;Database=AppDataBase;Username=postgres;Password=postgres"  # Строка подключения к базе данных
+      # Дополнительные переменные окружения (например, для конфигурации)
+
+    depends_on:
+      - db  # Указываем зависимость от сервиса "db" (база данных)
+    volumes:
+      - .:/app  #  Монтируем текущую директорию в /app (для разработки, не для продакшена)
+      - logs:/app/logs  # Монтируем volume для сохранения логов (опционально)
+
+volumes:
+  db_ # Определяем именованный volume для хранения данных PostgreSQL
+  logs: # Определяем именованный volume для хранения логов вашего приложения
