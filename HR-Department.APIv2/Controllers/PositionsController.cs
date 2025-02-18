@@ -1,4 +1,5 @@
-﻿using HR_Department.APIv2.DBModels;
+﻿using HR_Department.APIv2.Controllers.BaseController;
+using HR_Department.APIv2.DBModels;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;

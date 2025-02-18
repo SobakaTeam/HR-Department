@@ -8,9 +8,9 @@ using System.Net;
 using System.Reflection;
 using System.Xml.XPath;
 
-namespace HR_Department.APIv2.Controllers
+namespace HR_Department.APIv2.Controllers.BaseController
 {
-    public class MyApiController : ControllerBase
+    public abstract class MyApiController : ControllerBase
     {
         protected readonly AppDbContext dbContext;
         public MyApiController(AppDbContext context)
@@ -18,7 +18,7 @@ namespace HR_Department.APIv2.Controllers
             dbContext = context;
         }
         //CRUD
-        protected async Task<ActionResult<IEnumerable<T>>> GetEntities<T>([FromQuery] Dictionary<string, string> properties,
+        protected virtual async Task<ActionResult<IEnumerable<T>>> GetEntities<T>([FromQuery] Dictionary<string, string> properties,
             [FromHeader] string? orderBy, [FromHeader] SortOrder? sortOrder = SortOrder.Ascending) where T : class
         {
             IQueryable<T> query = dbContext.Set<T>();
@@ -51,7 +51,7 @@ namespace HR_Department.APIv2.Controllers
             else
             { return NotFound(); }
         }
-        protected async Task<ActionResult<T>> GetEntity<T>(long id) where T : class
+        protected virtual async Task<ActionResult<T>> GetEntity<T>(long id) where T : class
         {
             var entity = await dbContext.Set<T>().FindAsync(id);
 
@@ -61,9 +61,9 @@ namespace HR_Department.APIv2.Controllers
             }
             return entity;
         }
-        protected async Task<ActionResult<T>> PostEntity<T>(T entity) where T : class 
+        protected virtual async Task<ActionResult<T>> PostEntity<T>(T entity) where T : class
         {
-            if(entity == null)
+            if (entity == null)
             {
                 return BadRequest();
             }
@@ -84,14 +84,14 @@ namespace HR_Department.APIv2.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { Message = "Error saving changes to database", Error = ex.Message });
             }
         }
-        protected async Task<ActionResult<T>> PutEntity<T>(T entity) where T : class
+        protected virtual async Task<ActionResult<T>> PutEntity<T>(T entity) where T : class
         {
             if (entity == null)
             {
                 return BadRequest();
             }
             long entityId = GetId(entity);
-            if(!await ExistsEntity<T>(entityId))
+            if (!await ExistsEntity<T>(entityId))
             {
                 return NotFound();
             }
@@ -106,12 +106,12 @@ namespace HR_Department.APIv2.Controllers
             }
             return Ok(entity);
         }
-        protected async Task<ActionResult> PatchEntity<T>(long entityId, JsonPatchDocument<T> patchDocument) where T : class
+        protected virtual async Task<ActionResult> PatchEntity<T>(long entityId, JsonPatchDocument<T> patchDocument) where T : class
         {
             var entity = await dbContext.Set<T>().FirstOrDefaultAsync(e => EF.Property<long>(e, "Id") == entityId);
 
             if (entity == null)
-            {   
+            {
                 return NotFound();
             }
             try
@@ -129,7 +129,7 @@ namespace HR_Department.APIv2.Controllers
             }
             return NoContent();
         }
-        protected async Task<ActionResult> DeleteEntity<T>(long id) where T : class
+        protected virtual async Task<ActionResult> DeleteEntity<T>(long id) where T : class
         {
             var entity = await dbContext.Set<T>().FindAsync(id);
             if (entity == null)
@@ -147,8 +147,8 @@ namespace HR_Department.APIv2.Controllers
             }
             return Ok();
         }
-        protected async Task<ActionResult<IEnumerable<T>>> GetEntitiesByForginKey<T,TForgin>(Expression<Func<TForgin,bool>> ForginKeyFilter,Expression<Func<TForgin,T>> entityPropertySelector) 
-            where TForgin : class 
+        protected virtual async Task<ActionResult<IEnumerable<T>>> GetEntitiesByForginKey<T, TForgin>(Expression<Func<TForgin, bool>> ForginKeyFilter, Expression<Func<TForgin, T>> entityPropertySelector)
+            where TForgin : class
             where T : class
         {
             try
@@ -158,13 +158,13 @@ namespace HR_Department.APIv2.Controllers
                     .Where(ForginKeyFilter)
                     .Select(entityPropertySelector)
                     .ToListAsync();
-                if(!entities.Any())
+                if (!entities.Any())
                 {
                     return NotFound();
                 }
                 return Ok(entities);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { Message = "Error geting data from database", Error = ex.Message });
             }
@@ -174,7 +174,7 @@ namespace HR_Department.APIv2.Controllers
         {
             return await dbContext.Set<T>().AnyAsync(e => EF.Property<long>(e, "Id") == id);
         }
-        protected IQueryable<T> AplyWhereFilter<T>(IQueryable<T> query, string propertyName,string value)
+        protected IQueryable<T> AplyWhereFilter<T>(IQueryable<T> query, string propertyName, string value)
         {
             ParameterExpression parameter = Expression.Parameter(typeof(T), "p");
             MemberExpression property = Expression.Property(parameter, propertyName);
@@ -228,14 +228,14 @@ namespace HR_Department.APIv2.Controllers
             }
             return (long)IdProperty.GetValue(entity);
         }
-        private object? GetPropertyValue<T>(T entity,string propertyName) where T : class
+        private object? GetPropertyValue<T>(T entity, string propertyName) where T : class
         {
             var property = typeof(T).GetProperty(propertyName);
             if (property == null)
             {
                 throw new InvalidOperationException("Must have a property");
             }
-            return (object?)property.GetValue(entity);
+            return property.GetValue(entity);
         }
     }
 }

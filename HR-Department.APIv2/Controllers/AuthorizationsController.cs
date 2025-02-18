@@ -1,4 +1,5 @@
-﻿using HR_Department.APIv2.DBModels;
+﻿using HR_Department.APIv2.Controllers.BaseController;
+using HR_Department.APIv2.DBModels;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,7 +13,6 @@ namespace HR_Department.APIv2.Controllers
         public AuthorizationsController(AppDbContext context) : base(context)
         {
         }
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Authorization>>> Get([FromQuery] Dictionary<string, string> properties,
             [FromHeader] string? orderBy, [FromHeader] SortOrder? sortOrder = SortOrder.Ascending)
