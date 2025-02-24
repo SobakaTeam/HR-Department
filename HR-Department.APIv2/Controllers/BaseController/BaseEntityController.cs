@@ -10,10 +10,10 @@ using System.Xml.XPath;
 
 namespace HR_Department.APIv2.Controllers.BaseController
 {
-    public abstract class MyApiController : ControllerBase
+    public abstract class BaseEntityController : ControllerBase
     {
         protected readonly AppDbContext dbContext;
-        public MyApiController(AppDbContext context)
+        public BaseEntityController(AppDbContext context)
         {
             dbContext = context;
         }

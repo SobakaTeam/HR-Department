@@ -1,9 +1,10 @@
-﻿using System;
+﻿using HR_Department.APIv2.DBModels.Types;
+using System;
 using System.Collections.Generic;
 
 namespace HR_Department.APIv2.DBModels;
 
-public partial class DepartmentOrganization
+public partial class DepartmentOrganization : IJunction
 {
     public long Id { get; set; }
 

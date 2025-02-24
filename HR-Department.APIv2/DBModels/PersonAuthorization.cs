@@ -1,9 +1,10 @@
-﻿using System;
+﻿using HR_Department.APIv2.DBModels.Types;
+using System;
 using System.Collections.Generic;
 
 namespace HR_Department.APIv2.DBModels;
 
-public partial class PersonAuthorization
+public partial class PersonAuthorization : IJunction
 {
     public long Id { get; set; }
 

@@ -9,7 +9,7 @@ namespace HR_Department.APIv2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrganizationsController : MyApiController
+    public class OrganizationsController : BaseEntityController
     {
         public OrganizationsController(AppDbContext context) : base(context)
         {

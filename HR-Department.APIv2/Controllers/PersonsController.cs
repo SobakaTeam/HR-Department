@@ -20,7 +20,7 @@ namespace HR_Department.APIv2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PersonsController : MyApiController
+    public class PersonsController : BaseEntityController
     {
         public PersonsController(AppDbContext context) : base(context) 
         {

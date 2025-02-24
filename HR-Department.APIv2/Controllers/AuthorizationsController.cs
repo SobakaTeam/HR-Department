@@ -8,7 +8,7 @@ namespace HR_Department.APIv2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthorizationsController : MyApiController
+    public class AuthorizationsController : BaseEntityController
     {
         public AuthorizationsController(AppDbContext context) : base(context)
         {

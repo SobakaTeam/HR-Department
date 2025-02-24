@@ -8,7 +8,7 @@ namespace HR_Department.APIv2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PositionsController : MyApiController
+    public class PositionsController : BaseEntityController
     {
         public PositionsController(AppDbContext context) : base(context)
         {

@@ -29,7 +29,7 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<PersonAuthorization> PersonAuthorizations { get; set; }
 
-    public virtual DbSet<PersonChild> PersonChildren { get; set; }
+    public virtual DbSet<PersonChild> PersonChild { get; set; }
 
     public virtual DbSet<PersonDepartment> PersonDepartments { get; set; }
 

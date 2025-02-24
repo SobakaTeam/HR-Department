@@ -14,7 +14,7 @@ namespace HR_Department.APIv2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ChildrenController : MyApiController
+    public class ChildrenController : BaseEntityController
     {
         public ChildrenController(AppDbContext context) : base(context)
         {

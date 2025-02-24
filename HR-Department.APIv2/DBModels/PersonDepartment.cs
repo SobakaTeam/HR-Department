@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using HR_Department.APIv2.DBModels.Types;
 
 namespace HR_Department.APIv2.DBModels;
 
-public partial class PersonDepartment
+public partial class PersonDepartment : IJunction
 {
     public long Id { get; set; }
 

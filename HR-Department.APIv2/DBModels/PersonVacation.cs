@@ -1,9 +1,10 @@
-﻿using System;
+﻿using HR_Department.APIv2.DBModels.Types;
+using System;
 using System.Collections.Generic;
 
 namespace HR_Department.APIv2.DBModels;
 
-public partial class PersonVacation
+public partial class PersonVacation : IJunction
 {
     public long Id { get; set; }
 
