@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace HR_Department.APIv2.DBModels;
 
-public partial class PersonVacation : IJunction
+public partial class PersonVacation
 {
     public long Id { get; set; }
 

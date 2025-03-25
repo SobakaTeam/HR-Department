@@ -4,7 +4,7 @@ using HR_Department.APIv2.DBModels.Types;
 
 namespace HR_Department.APIv2.DBModels;
 
-public partial class PersonSalary : IJunction
+public partial class PersonSalary 
 {
     public long Id { get; set; }
 

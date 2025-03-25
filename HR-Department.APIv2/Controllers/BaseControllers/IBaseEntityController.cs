@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using System.Linq.Expressions;
 
-namespace HR_Department.APIv2.Controllers.BaseController
+namespace HR_Department.APIv2.Controllers.BaseControllers
 {
     public interface IBaseEntityController
     {

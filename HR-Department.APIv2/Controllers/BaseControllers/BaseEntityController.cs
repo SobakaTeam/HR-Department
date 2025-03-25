@@ -8,7 +8,7 @@ using System.Net;
 using System.Reflection;
 using System.Xml.XPath;
 
-namespace HR_Department.APIv2.Controllers.BaseController
+namespace HR_Department.APIv2.Controllers.BaseControllers
 {
     public abstract class BaseEntityController : ControllerBase
     {

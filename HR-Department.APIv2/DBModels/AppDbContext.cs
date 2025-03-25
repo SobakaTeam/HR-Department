@@ -168,24 +168,15 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<PersonChild>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("Person/child_pkey");
+            entity.HasKey(e => e.Id).HasName("PersonChild_pkey");
 
-            entity.ToTable("Person/child");
+            entity.ToTable("PersonChild");
 
             entity.Property(e => e.Id)
                 .HasColumnName("ID");
             entity.Property(e => e.ChildId).HasColumnName("Child_ID");
             entity.Property(e => e.PersonId).HasColumnName("Person_ID");
 
-            entity.HasOne(d => d.Child).WithMany(p => p.PersonChildren)
-                .HasForeignKey(d => d.ChildId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("person/child_child_id_foreign");
-
-            entity.HasOne(d => d.Person).WithMany(p => p.PersonChildren)
-                .HasForeignKey(d => d.PersonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("person/child_person_id_foreign");
         });
 
         modelBuilder.Entity<PersonDepartment>(entity =>

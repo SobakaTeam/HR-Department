@@ -1,4 +1,4 @@
-﻿using HR_Department.APIv2.Controllers.BaseController;
+﻿using HR_Department.APIv2.Controllers.BaseControllers;
 using HR_Department.APIv2.DBModels;
 using HR_Department.APIv2.DBModels.Types;
 using Microsoft.AspNetCore.Http;
@@ -14,24 +14,25 @@ namespace HR_Department.APIv2.Controllers
     {
         public JunctionController(AppDbContext dbContext) : base(dbContext)
         {
+            
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<IJunction>>> Get(string junctionName) // тута много работа
         {
             string typePath = $"HR_Department.APIv2.DBModels.{junctionName}";
-            Type junctionType  = Type.GetType(typePath);
-            if(junctionType == null)
+            Type junctionType = Type.GetType(typePath);
+            if (junctionType == null)
             {
                 return BadRequest($"Not found type {junctionName}");
             }
-            var getMethod = typeof(BaseJunctionController).GetMethod()
+            var getMethod = typeof(BaseJunctionController).GetMethod("GetJunction");
             if (getMethod == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
             var getJunction = getMethod.MakeGenericMethod(junctionType);
-            dynamic list = getJunction.Invoke(null,null);
+            dynamic list = getJunction.Invoke(null, null);
             return await list;
         }
     }

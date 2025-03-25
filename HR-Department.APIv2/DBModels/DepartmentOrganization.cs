@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace HR_Department.APIv2.DBModels;
 
-public partial class DepartmentOrganization : IJunction
+public partial class DepartmentOrganization 
 {
     public long Id { get; set; }
 

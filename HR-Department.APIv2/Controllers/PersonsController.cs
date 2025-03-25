@@ -1,4 +1,4 @@
-﻿using HR_Department.APIv2.Controllers.BaseController;
+﻿using HR_Department.APIv2.Controllers.BaseControllers;
 using HR_Department.APIv2.DBModels;
 using HR_Department.APIv2.DBModels.Types;
 using Microsoft.AspNetCore.Http;

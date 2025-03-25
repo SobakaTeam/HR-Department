@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using HR_Department.APIv2.DBModels;
 using Microsoft.AspNetCore.JsonPatch;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using HR_Department.APIv2.Controllers.BaseController;
+using HR_Department.APIv2.Controllers.BaseControllers;
 
 namespace HR_Department.APIv2.Controllers
 {

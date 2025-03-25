@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-namespace HR_Department.APIv2.Controllers.BaseController
+namespace HR_Department.APIv2.Controllers.BaseControllers
 {
     public class BaseJunctionController : ControllerBase
     {
@@ -14,7 +14,7 @@ namespace HR_Department.APIv2.Controllers.BaseController
         {
             this.dbContext = dbContext;
         }
-        protected async Task<ActionResult<IEnumerable<IJunction>>> GetJunction<TJunction>()
+        protected async Task<ActionResult<IEnumerable<TJunction>>> GetJunction<TJunction>()
             where TJunction : class
         {
             return Ok(await dbContext.Set<TJunction>().ToListAsync());
@@ -31,27 +31,30 @@ namespace HR_Department.APIv2.Controllers.BaseController
                 }
                 return Ok(junctionObj);
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception($"Возникло исключение в попытке выборки из таблицы", ex);
             }
         }
-        protected async Task<ActionResult<TJunction>> CreateJunction<TJunction,TEntity1,TEntity2>(string entity1Name, long entity1Id, string entity2Name, long entity2Id)
+        protected async Task<ActionResult<TJunction>> CreateJunction<TJunction, TEntity1, TEntity2>(long entity1Id, long entity2Id)
             where TJunction : class
             where TEntity1 : class
             where TEntity2 : class
         {
+            string entity1Name = typeof(TEntity1).Name;
+            string entity2Name = typeof(TEntity2).Name;
+
             //проверка на существование метода добавления 
             if (dbContext.Set<TJunction>().GetType().GetMethod("Add") == null)
             {
                 return BadRequest($"Не удалось найти метод 'Add' в {typeof(TJunction).Name}");
             }
             //проверка на существующие ID связуемых сущностей
-            if (!await dbContext.Set<TEntity1>().AnyAsync(e => EF.Property<long>(e,"Id").Equals(entity1Id)))
+            if (!await dbContext.Set<TEntity1>().AnyAsync(e => EF.Property<long>(e, "Id").Equals(entity1Id)))
             {
                 return BadRequest($"Сущность типа {typeof(TEntity1).Name} с ID {entity1Id} не найдена.");
             }
-            if (!await dbContext.Set<TEntity2>().AnyAsync(e => EF.Property<long>(e,"Id").Equals(entity2Id)))
+            if (!await dbContext.Set<TEntity2>().AnyAsync(e => EF.Property<long>(e, "Id").Equals(entity2Id)))
             {
                 return BadRequest($"Сущность типа {typeof(TEntity2).Name} с ID {entity2Id} не найдена");
             }
@@ -79,9 +82,9 @@ namespace HR_Department.APIv2.Controllers.BaseController
                 await dbContext.SaveChangesAsync();
                 return Ok(junctinObject);
             }
-            catch(Exception ex )
+            catch (Exception ex)
             {
-                throw new Exception($"Возникло исключение в попытке добавление нового обьекта в связующую таблицу",ex);
+                throw new Exception($"Возникло исключение в попытке добавление нового обьекта в связующую таблицу", ex);
             }
         }
         protected async Task<ActionResult> DeleteJunction<TJunction>(long junctionId)
