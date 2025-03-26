@@ -1,4 +1,4 @@
-﻿CREATE TABLE "PersonAuthorization"(
+CREATE TABLE "PersonAuthorization"(
     "ID" BIGINT PRIMARY KEY,
     "Person_ID" BIGINT NOT NULL,
     "Authorization_ID" BIGINT NOT NULL

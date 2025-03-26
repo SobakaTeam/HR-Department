@@ -78,7 +78,7 @@ public partial class AppDbContext : DbContext
                 .HasColumnName("ID");
             entity.Property(e => e.FirstName).HasMaxLength(255);
             entity.Property(e => e.MidleName).HasMaxLength(255);
-            entity.Property(e => e.Surname).HasMaxLength(255);
+            entity.Property(e => e.LastName).HasMaxLength(255);
         });
 
         modelBuilder.Entity<Department>(entity =>
@@ -94,9 +94,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DepartmentOrganization>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("Department/Organization_pkey");
+            entity.HasKey(e => e.Id).HasName("DepartmentOrganization_pkey");
 
-            entity.ToTable("Department/Organization");
+            entity.ToTable("DepartmentOrganization");
 
             entity.Property(e => e.Id)
                 .HasColumnName("ID");
@@ -106,12 +106,12 @@ public partial class AppDbContext : DbContext
             entity.HasOne(d => d.Department).WithMany(p => p.DepartmentOrganizations)
                 .HasForeignKey(d => d.DepartmentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("department/organization_department_id_foreign");
+                .HasConstraintName("departmentorganization_department_id_foreign");
 
             entity.HasOne(d => d.Organization).WithMany(p => p.DepartmentOrganizations)
                 .HasForeignKey(d => d.OrganizationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("department/organization_organization_id_foreign");
+                .HasConstraintName("departmentorganization_organization_id_foreign");
         });
 
         modelBuilder.Entity<Organization>(entity =>
@@ -146,9 +146,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<PersonAuthorization>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("Person/Authorization_pkey");
+            entity.HasKey(e => e.Id).HasName("PersonAuthorization_pkey");
 
-            entity.ToTable("Person/Authorization");
+            entity.ToTable("PersonAuthorization");
 
             entity.Property(e => e.Id)
                 .HasColumnName("ID");
@@ -158,12 +158,12 @@ public partial class AppDbContext : DbContext
             entity.HasOne(d => d.Authorization).WithMany(p => p.PersonAuthorizations)
                 .HasForeignKey(d => d.AuthorizationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("person/authorization_autorization_id_foreign");
+                .HasConstraintName("personauthorization_autorization_id_foreign");
 
             entity.HasOne(d => d.Person).WithMany(p => p.PersonAuthorizations)
                 .HasForeignKey(d => d.PersonId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("person/authorization_person_id_foreign");
+                .HasConstraintName("personauthorization_person_id_foreign");
         });
 
         modelBuilder.Entity<PersonChild>(entity =>
@@ -181,9 +181,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<PersonDepartment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("Person/Department_pkey");
+            entity.HasKey(e => e.Id).HasName("PersonDepartment_pkey");
 
-            entity.ToTable("Person/Department");
+            entity.ToTable("PersonDepartment");
 
             entity.Property(e => e.Id)
                 .HasColumnName("ID");
@@ -193,19 +193,19 @@ public partial class AppDbContext : DbContext
             entity.HasOne(d => d.Department).WithMany(p => p.PersonDepartments)
                 .HasForeignKey(d => d.DepartmentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("person/department_department_id_foreign");
+                .HasConstraintName("persondepartment_department_id_foreign");
 
             entity.HasOne(d => d.Person).WithMany(p => p.PersonDepartments)
                 .HasForeignKey(d => d.PersonId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("person/department_person_id_foreign");
+                .HasConstraintName("persondepartment_person_id_foreign");
         });
 
         modelBuilder.Entity<PersonPosition>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("Person/Position_pkey");
+            entity.HasKey(e => e.Id).HasName("PersonPosition_pkey");
 
-            entity.ToTable("Person/Position");
+            entity.ToTable("PersonPosition");
 
             entity.Property(e => e.Id)
                 .HasColumnName("ID");
@@ -225,9 +225,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<PersonSalary>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("Person/Salary_pkey");
+            entity.HasKey(e => e.Id).HasName("PersonSalary_pkey");
 
-            entity.ToTable("Person/Salary");
+            entity.ToTable("PersonSalary");
 
             entity.Property(e => e.Id)
                 .HasColumnName("ID");
@@ -237,19 +237,19 @@ public partial class AppDbContext : DbContext
             entity.HasOne(d => d.Person).WithMany(p => p.PersonSalaries)
                 .HasForeignKey(d => d.PersonId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("person/salary_person_id_foreign");
+                .HasConstraintName("personsalary_person_id_foreign");
 
             entity.HasOne(d => d.Salary).WithMany(p => p.PersonSalaries)
                 .HasForeignKey(d => d.SalaryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("person/salary_salary_id_foreign");
+                .HasConstraintName("personsalary_salary_id_foreign");
         });
 
         modelBuilder.Entity<PersonVacation>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("Person/Vacation_pkey");
+            entity.HasKey(e => e.Id).HasName("PersonVacation_pkey");
 
-            entity.ToTable("Person/Vacation");
+            entity.ToTable("PersonVacation");
 
             entity.Property(e => e.Id)
                 .HasColumnName("ID");
@@ -259,12 +259,12 @@ public partial class AppDbContext : DbContext
             entity.HasOne(d => d.Person).WithMany(p => p.PersonVacations)
                 .HasForeignKey(d => d.PersonId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("person/vacation_person_id_foreign");
+                .HasConstraintName("personvacation_person_id_foreign");
 
             entity.HasOne(d => d.Vacation).WithMany(p => p.PersonVacations)
                 .HasForeignKey(d => d.VacationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("person/vacation_vacation_id_foreign");
+                .HasConstraintName("personvacation_vacation_id_foreign");
         });
 
         modelBuilder.Entity<Position>(entity =>

@@ -59,7 +59,7 @@ namespace HR_Department.APIv2.Controllers.BaseControllers
                 return BadRequest($"Сущность типа {typeof(TEntity2).Name} с ID {entity2Id} не найдена");
             }
             //получение свойств связующей таблицы
-            string seperator = "_ID";
+            string seperator = "Id";
             PropertyInfo junctionProp1 = typeof(TJunction).GetProperty(entity1Name + seperator);
             PropertyInfo junctionProp2 = typeof(TJunction).GetProperty(entity2Name + seperator);
             if (junctionProp1 == null)
@@ -69,6 +69,13 @@ namespace HR_Department.APIv2.Controllers.BaseControllers
             if (junctionProp2 == null)
             {
                 return BadRequest($"Не удалось найти свойсвто {entity2Name} в типе {typeof(TJunction).Name}");
+            }
+            //проверка на уже существующей связи
+            if (await dbContext.Set<TJunction>()
+                .AnyAsync(x => EF.Property<long>(x,junctionProp1.Name) == entity1Id 
+                && EF.Property<long>(x,junctionProp2.Name) == entity2Id ))
+            {
+                return BadRequest("Добавление уже существующей свящи запрещаю");
             }
             //установка новых значений
             try
