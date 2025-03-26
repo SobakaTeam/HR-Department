@@ -1,41 +1,35 @@
-version: "3.9"  # Указываем версию формата docker-compose
+п»їversion: "3.9"
 
 services:
-  # --- Сервис базы данных PostgreSQL ---
   db:
-    image: postgres:17  # Используем официальный образ PostgreSQL (замените на нужную версию)
-    container_name: app-db # Уникальное имя контейнера
-    restart: always  # Автоматически перезапускать контейнер при сбое
+    image: postgres:17
+    container_name: app-db
+    restart: always
     environment:
-      POSTGRES_USER: postgres  # Замените на желаемое имя пользователя
-      POSTGRES_PASSWORD: postgres  # Замените на надежный пароль
-      POSTGRES_DB: AppDataBase  # Замените на имя вашей базы данных
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: AppDataBase
 
     ports:
-      - "5432:5432"  # Отображаем порт 5432 контейнера на порт 5432 хоста (для доступа извне)
+      - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data  # Монтируем volume для сохранения данных (необязательно, но рекомендуется)
+      - db_data:/var/lib/postgresql/data
       - ./Launcher/init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  # --- Сервис вашего .NET приложения ---
   app:
     build:
-      context: .  # Указываем текущую директорию как контекст сборки
-      dockerfile: Dockerfile # Название Dockerfile
-    container_name: my-app  # Уникальное имя контейнера
-    restart: always # Автоматически перезапускать контейнер при сбое
+      context: ./HR-Department.APIv2 # Corrected
+      dockerfile: ./HR-Department.APIv2/Dockerfile
+    container_name: my-app
+    restart: always
     ports:
       - "8000:8080"
-      - "8001:8081" # Отображаем порт 80 контейнера на порт 8000 хоста (для доступа извне)
     environment:
-      # Передаем переменные окружения вашему приложению
-      ASPNETCORE_ENVIRONMENT: Development  # Замените на Production в продакшене
-      ConnectionStrings__DefaultConnection: "Host=db;Database=AppDataBase;Username=postgres;Password=postgres"  # Строка подключения к базе данных
-      # Дополнительные переменные окружения (например, для конфигурации)
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Host=db;Database=AppDataBase;Username=postgres;Password=postgres"
 
     depends_on:
-      - db  # Указываем зависимость от сервиса "db" (база данных)
-    volumes:
-      - .:/app  #  Монтируем текущую директорию в /app (для разработки, не для продакшена)
-      - logs:/app/logs  # Монтируем volume для сохранения логов (опционально)
-      
+      - db
+
+volumes:
+  db_data:
